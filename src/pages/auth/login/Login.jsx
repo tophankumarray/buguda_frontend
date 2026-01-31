@@ -13,6 +13,7 @@ import RoleTabs from "./components/RoleTabs";
 import StaffLoginForm from "./components/StaffLoginForm";
 
 import { adminLogin, supervisorLogin } from "../../../api/admin/auth.api";
+import api from "../../../api/mockAPI";
 import { useAuth } from "../../../context/AuthContext";
 import {
   DOWNLOAD_URL,
@@ -157,37 +158,30 @@ const Login = () => {
       }
 
       // Handle admin and supervisor login response
-      if (response?.success !== true) {
+      if (response.success || response.message?.includes("successful")) {
         await saveLoginLog({
           role,
           phone: null,
           username,
-          status: "failed",
+          status: "success",
         });
 
-        toast.error(response?.message || "Invalid username or password ❌");
-        return; // 🔴 STOP HERE – NO REDIRECT
+        // Store user data based on role
+        const userData = {
+          role,
+          username,
+          ...(response.data && { ...response.data }),
+        };
+
+        // Store token if provided
+        const token = response.token || null;
+        login(userData, token);
+
+        toast.success(response.message || "Login successful!");
+        navigate(`/${role}`);
+      } else {
+        throw new Error(response.message || "Login failed");
       }
-
-      // ✅ SUCCESS ONLY
-      await saveLoginLog({
-        role,
-        phone: null,
-        username,
-        status: "success",
-      });
-
-      const userData = {
-        role,
-        username,
-        ...(response.data || {}),
-      };
-
-      const token = response.token || null;
-      login(userData, token);
-
-      toast.success(response.message || "Login successful!");
-      navigate(`/${role}`);
     } catch (error) {
       console.error("Login error:", error);
 
@@ -226,11 +220,11 @@ const Login = () => {
       <div className="lg:w-1/2 flex items-center justify-center p-4 lg:p-8">
         <div className="w-full max-w-md">
           <div className="lg:hidden flex justify-center mb-6">
-            <div className="w-20 h-20 bg-emerald-600 rounded-full flex items-center justify-center shadow-lg overflow-hidden">
+            <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center shadow-xl">
               <img
                 src={LOGO}
-                alt="Buguda Logo"
-                className="w-full h-full object-cover"
+                alt="Buguda NAC Logo"
+                className="w-24 h-24 object-contain"
               />
             </div>
           </div>
@@ -241,11 +235,11 @@ const Login = () => {
             <LanguageSelector i18n={i18n} />
 
             <div className="flex justify-center mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-amber-400 rounded-full flex items-center justify-center shadow-lg overflow-hidden">
+              <div className="w-28 h-28 bg-white rounded-full flex items-center justify-center shadow-xl ">
                 <img
                   src={LOGO}
-                  alt="Ganjam Logo"
-                  className="w-full h-full object-cover"
+                  alt="Buguda NAC Logo"
+                  className="w-20 h-20 object-contain"
                 />
               </div>
             </div>

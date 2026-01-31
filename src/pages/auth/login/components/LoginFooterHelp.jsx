@@ -6,10 +6,10 @@ export default function LoginFooterHelp() {
       <p className="text-sm text-gray-600">
         Need help?{" "}
         <a
-          href="mailto:support@ganjamnac.in"
+          href="mailto:bugudanac@rediffmail.com"
           className="text-emerald-600 hover:underline font-medium"
         >
-          support@bugudanac.in
+          bugudanac@rediffmail.com
         </a>
       </p>
     </div>
