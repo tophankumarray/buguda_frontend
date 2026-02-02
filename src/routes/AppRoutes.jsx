@@ -10,11 +10,11 @@ import AdminAttendance from "../pages/admin/Attendance";
 import Complaint from "../pages/admin/complaints";
 import AdminDashboard from "../pages/admin/dashboard";
 import FuelManagement from "../pages/admin/fuel-management";
-import SupervisorManagement from "../pages/admin/Supervisors";
+import SupervisorManagement from "../pages/admin/supervisors";
 import TrackVehicle from "../pages/admin/track-vehicles";
 import Vehicle from "../pages/admin/vehicles";
 import Ward from "../pages/admin/wards";
-import WasteCollection from "../pages/admin/WasteCollection";
+import WasteCollection from "../pages/admin/wastecollection";
 
 /* ================= CITIZEN ================= */
 import CitizenLayout from "../layout/CitizenLayout";
