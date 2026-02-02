@@ -1,6 +1,5 @@
 // @ts-nocheck
 import { useEffect, useState } from "react";
-import api from "../../../api/mockAPI";
 
 import AttendanceHeader from "./components/AttendanceHeader";
 import SummaryGrid from "./components/SummaryGrid";

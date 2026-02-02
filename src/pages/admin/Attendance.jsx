@@ -1,7 +1,6 @@
 // @ts-nocheck
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import api from '../../api/mockAPI';
 import AttendanceCard from '../../components/admin/AttendanceCard';
 import StatsCard from '../../components/admin/StatsCard';
 

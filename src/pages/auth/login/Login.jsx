@@ -13,7 +13,6 @@ import RoleTabs from "./components/RoleTabs";
 import StaffLoginForm from "./components/StaffLoginForm";
 
 import { adminLogin, supervisorLogin } from "../../../api/admin/auth.api";
-import api from "../../../api/mockAPI";
 import { useAuth } from "../../../context/AuthContext";
 import {
   DOWNLOAD_URL,
@@ -21,6 +20,7 @@ import {
   generateOtp,
   LOGO,
 } from "./utils/loginHelpers";
+import api from "../../../api/api";
 
 const Login = () => {
   const { login } = useAuth();
