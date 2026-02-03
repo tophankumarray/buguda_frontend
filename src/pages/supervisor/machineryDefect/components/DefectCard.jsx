@@ -25,8 +25,8 @@ export default function DefectCard({ record, updatingId, onUpdateStatus }) {
               record.status === "started"
                 ? "bg-yellow-100 text-yellow-800 border border-yellow-300"
                 : record.status === "inprogress"
-                ? "bg-orange-100 text-orange-800 border border-orange-300"
-                : "bg-green-100 text-green-800 border border-green-300"
+                  ? "bg-orange-100 text-orange-800 border border-orange-300"
+                  : "bg-green-100 text-green-800 border border-green-300"
             }`}
           >
             {record.status}
@@ -39,7 +39,9 @@ export default function DefectCard({ record, updatingId, onUpdateStatus }) {
               <User className="h-6 w-6 text-blue-600" />
               <div>
                 <p className="text-xs text-gray-600 font-bold">Supervisor</p>
-                <p className="font-bold text-gray-800">{record.supervisorName}</p>
+                <p className="font-bold text-gray-800">
+                  {record.supervisorName}
+                </p>
               </div>
             </div>
 
@@ -47,7 +49,9 @@ export default function DefectCard({ record, updatingId, onUpdateStatus }) {
               <Phone className="h-6 w-6 text-purple-600" />
               <div>
                 <p className="text-xs text-gray-600 font-bold">Phone</p>
-                <p className="font-bold text-gray-800">{record.contactNumber}</p>
+                <p className="font-bold text-gray-800">
+                  {record.contactNumber}
+                </p>
               </div>
             </div>
 
@@ -66,7 +70,7 @@ export default function DefectCard({ record, updatingId, onUpdateStatus }) {
             {record.image ? (
               <div className="border-2 border-gray-200 rounded-2xl overflow-hidden shadow-lg w-full h-40 sm:h-44">
                 <img
-                  src={`http://localhost:8003/${record.image}`}
+                  src={`https://ambuguda.com/${record.image}`}
                   alt="Defect"
                   className="w-full h-full object-cover"
                 />

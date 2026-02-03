@@ -68,7 +68,7 @@ const RecordCard = ({ record, activeTab }) => {
             {record.image ? (
               <div className="border-2 border-gray-200 rounded-2xl overflow-hidden shadow-lg w-full h-44">
                 <img
-                  src={`http://localhost:8003/${record.image}`}
+                  src={`https://ambuguda.com/${record.image}`}
                   alt="Record"
                   className="w-full h-full object-cover"
                 />

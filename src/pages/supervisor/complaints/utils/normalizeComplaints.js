@@ -4,10 +4,10 @@ export const normalizeComplaints = (list = []) => {
     ward: c.ward || "N/A",
     type: c.title || c.category || "General Issue",
     image: c.photo
-      ? `http://localhost:8003/${c.photo}`
+      ? `https://ambuguda.com/${c.photo}`
       : c.image
-      ? `http://localhost:8003/${c.image}`
-      : "https://via.placeholder.com/300",
+        ? `https://ambuguda.com/${c.image}`
+        : "https://via.placeholder.com/300",
     vehicle: c.vehicle || "Not Assigned",
     driver: c.driver || "Not Assigned",
     status: c.status || "Pending",
@@ -18,8 +18,7 @@ export const normalizeComplaints = (list = []) => {
     updatedAt: c.updatedAt
       ? new Date(c.updatedAt).toLocaleTimeString()
       : new Date().toLocaleTimeString(),
-    sla:
-      c.sla || new Date(Date.now() + 4 * 60 * 60 * 1000).toISOString(),
+    sla: c.sla || new Date(Date.now() + 4 * 60 * 60 * 1000).toISOString(),
     location: c.location || "Berhampur, Odisha",
     description: c.description || "No description provided",
   }));
