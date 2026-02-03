@@ -4,9 +4,9 @@ export const normalizeComplaints = (list = []) => {
     ward: c.ward || "N/A",
     type: c.title || c.category || "General Issue",
     image: c.photo
-      ? `http://localhost:5900/${c.photo}`
+      ? `http://localhost:8003/${c.photo}`
       : c.image
-      ? `http://localhost:5900/${c.image}`
+      ? `http://localhost:8003/${c.image}`
       : "https://via.placeholder.com/300",
     vehicle: c.vehicle || "Not Assigned",
     driver: c.driver || "Not Assigned",

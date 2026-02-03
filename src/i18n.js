@@ -30,7 +30,7 @@ const resources = {
       loginTitle: "{{role}} Login",
       welcomeMessage: "Welcome to the Solid Waste Management System",
       municipalServices: "Municipal Services",
-      joinMission: "Join our mission for a cleaner and greener Ganjam",
+      joinMission: "Join our mission for a cleaner and greener Buguda",
       buildingFuture: "Building a sustainable future through responsible waste management.",
       recyclable: "Recyclable",
       phone: "Phone Number (10 digits)",

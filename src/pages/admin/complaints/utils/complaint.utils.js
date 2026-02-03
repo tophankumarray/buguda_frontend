@@ -10,7 +10,7 @@ export const normalizeComplaints = (list = []) =>
     category: item.category?.join(", "),
     description: item.description,
     photo: item.image
-      ? `http://localhost:5900/${item.image}`
+      ? `http://localhost:8003/${item.image}`
       : null,
 
     status: item.status?.toLowerCase().replace(" ", "-"),

@@ -138,7 +138,7 @@ export default function ComplaintsPage() {
                     {/* IMAGE */}
                     {complaint.image && (
                       <img
-                        src={`http://localhost:5900/${complaint.image}`}
+                        src={`http://localhost:8003/${complaint.image}`}
                         alt="Complaint"
                         className="w-48 h-32 object-cover rounded-xl"
                       />

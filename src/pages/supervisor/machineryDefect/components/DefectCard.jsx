@@ -66,7 +66,7 @@ export default function DefectCard({ record, updatingId, onUpdateStatus }) {
             {record.image ? (
               <div className="border-2 border-gray-200 rounded-2xl overflow-hidden shadow-lg w-full h-40 sm:h-44">
                 <img
-                  src={`http://localhost:5900/${record.image}`}
+                  src={`http://localhost:8003/${record.image}`}
                   alt="Defect"
                   className="w-full h-full object-cover"
                 />
