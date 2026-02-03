@@ -36,21 +36,7 @@ const Login = () => {
   const [showNotice, setShowNotice] = useState(true);
   const [generatedOtp, setGeneratedOtp] = useState("");
 
-  /* -------- shared helpers -------- */
-
-  const saveLoginLog = async ({ role, phone, username, status }) => {
-    try {
-      await api.post("/loginLogs", {
-        role,
-        phone: phone || null,
-        username: username || null,
-        time: new Date().toISOString(),
-        status,
-      });
-    } catch (error) {
-      console.error("Failed to save login log", error);
-    }
-  };
+  /* ---------- helpers ---------- */
 
   const ensureCitizenExists = async (phoneNumber) => {
     try {
@@ -70,7 +56,7 @@ const Login = () => {
     downloadFileFromPublic(DOWNLOAD_URL, "SBM 2.0.pdf");
   };
 
-  /* -------- citizen login -------- */
+  /* ---------- citizen login ---------- */
 
   const handleGetOtp = () => {
     if (phone.length !== 10) {
@@ -90,28 +76,15 @@ const Login = () => {
     if (otp === generatedOtp) {
       await ensureCitizenExists(phone);
 
-      await saveLoginLog({
-        role: "citizen",
-        phone,
-        username: null,
-        status: "success",
-      });
-
       login({ role: "citizen", phone });
       toast.success("Login successful!");
       navigate("/citizen");
     } else {
-      await saveLoginLog({
-        role: "citizen",
-        phone,
-        username: null,
-        status: "failed",
-      });
       toast.error("Invalid OTP ❌");
     }
   };
 
-  /* -------- staff login -------- */
+  /* ---------- staff login ---------- */
 
   const handleStaffLogin = async () => {
     if (!username || !password) {
@@ -122,34 +95,20 @@ const Login = () => {
     try {
       let response;
 
-      // Call appropriate API based on role
       if (role === "admin") {
         response = await adminLogin(username, password);
       } else if (role === "supervisor") {
         response = await supervisorLogin(username, password);
       } else {
-        // For other roles (driver, etc.), use mock API
+        // Other roles (driver, etc.)
         const { data: users } = await api.get("/users", {
           params: { username, password, role },
         });
 
         if (!users || users.length === 0) {
-          await saveLoginLog({
-            role,
-            phone: null,
-            username,
-            status: "failed",
-          });
           toast.error("Invalid username or password ❌");
           return;
         }
-
-        await saveLoginLog({
-          role,
-          phone: null,
-          username,
-          status: "success",
-        });
 
         login({ role, username });
         toast.success("Login successful!");
@@ -157,48 +116,30 @@ const Login = () => {
         return;
       }
 
-      // Handle admin and supervisor login response
-      if (response.success || response.message?.includes("successful")) {
-        await saveLoginLog({
-          role,
-          phone: null,
-          username,
-          status: "success",
-        });
-
-        // Store user data based on role
+      if (response?.success || response?.message?.includes("successful")) {
         const userData = {
           role,
           username,
-          ...(response.data && { ...response.data }),
+          ...(response.data || {}),
         };
 
-        // Store token if provided
         const token = response.token || null;
         login(userData, token);
 
         toast.success(response.message || "Login successful!");
         navigate(`/${role}`);
       } else {
-        throw new Error(response.message || "Login failed");
+        toast.error(response?.message || "Login failed ❌");
       }
     } catch (error) {
       console.error("Login error:", error);
-
-      await saveLoginLog({
-        role,
-        phone: null,
-        username,
-        status: "failed",
-      });
-
-      const errorMessage =
-        error.message || error.error || "Invalid username or password ❌";
-      toast.error(errorMessage);
+      toast.error(
+        error?.message || error?.error || "Invalid username or password ❌",
+      );
     }
   };
 
-  /* -------- reset on role change -------- */
+  /* ---------- reset on role change ---------- */
 
   const resetFormOnRoleChange = () => {
     setShowOtpInput(false);
@@ -219,6 +160,7 @@ const Login = () => {
 
       <div className="lg:w-1/2 flex items-center justify-center p-4 lg:p-8">
         <div className="w-full max-w-md">
+          {/* Mobile Logo */}
           <div className="lg:hidden flex justify-center mb-6">
             <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center shadow-xl">
               <img
@@ -235,7 +177,7 @@ const Login = () => {
             <LanguageSelector i18n={i18n} />
 
             <div className="flex justify-center mb-6">
-              <div className="w-28 h-28 bg-white rounded-full flex items-center justify-center shadow-xl ">
+              <div className="w-28 h-28 bg-white rounded-full flex items-center justify-center shadow-xl">
                 <img
                   src={LOGO}
                   alt="Buguda NAC Logo"
