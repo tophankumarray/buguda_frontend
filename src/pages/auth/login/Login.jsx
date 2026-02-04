@@ -60,17 +60,27 @@ const Login = () => {
 
   const handleVerifyOtp = async () => {
     try {
-      const response = await api.post("/citizen/verify-otp", { phone, otp });
+      const response = await api.post("/citizen/verify-otp", {
+        phone: phone.trim(),
+        otp: otp.trim(), // 🔥 THIS IS THE FIX
+      });
+
       const { token, citizen } = response.data;
+
       localStorage.setItem("token", token);
       login({ role: "citizen", phone, citizen });
+
       toast.success("Login successful!");
       navigate("/citizen");
     } catch (error) {
-      toast.error("Invalid OTP or expired. Please try again.");
-      console.error("Verify OTP error:", error);
+      console.error("Verify OTP error:", error.response?.data);
+      toast.error(
+        error.response?.data?.message ||
+          "Invalid OTP or expired. Please try again.",
+      );
     }
   };
+
 
   /* ---------- staff login ---------- */
 
