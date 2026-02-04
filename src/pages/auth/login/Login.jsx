@@ -32,6 +32,7 @@ const Login = () => {
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showNotice, setShowNotice] = useState(true);
   const [generatedOtp, setGeneratedOtp] = useState("");
 
   const handleDownloadGuide = () => {
@@ -138,10 +139,10 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row font-sans bg-gray-100">
-      {/* <NoticePopup
+      <NoticePopup
         showNotice={showNotice}
         onClose={() => setShowNotice(false)}
-      /> */}
+      />
 
       <LeftPanel />
 
