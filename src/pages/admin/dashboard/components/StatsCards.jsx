@@ -1,5 +1,6 @@
 // @ts-nocheck
 import StatsCard from "../../../../components/admin/StatsCard";
+import { adminLogin } from './../../../../api/admin/auth.api';
 
 const StatsCards = ({ dashboardData }) => {
   const statsCards = [
@@ -43,7 +44,7 @@ const StatsCards = ({ dashboardData }) => {
       value: dashboardData.stats.citizens,
       icon: "👥",
       gradient: "from-purple-500 to-violet-600",
-      link: null,
+      link: "/admin/register-citizen",
     },
   ];
 

@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import ContactDetailsModal from "./ContactDetailsModal";
 import ChangePasswordModal from "./ChangePasswordModal";
 import AdminNavbarContent from "./AdminNavbarContent";
-import api from './../../../api/api';
+import api from "./../../../api/api";
 
 const AdminNavbar = ({ onMenuClick }) => {
   /* ===================== UI STATES ===================== */
@@ -42,6 +42,26 @@ const AdminNavbar = ({ onMenuClick }) => {
     instagram: "",
     linkedIn: "",
   });
+
+  /* ===================== FETCH CONTACT DATA ===================== */
+  useEffect(() => {
+    const fetchContactData = async () => {
+      try {
+        const response = await api.get("/contact-profile/contact-get");
+        if (response.data) {
+          const data = response.data;
+          setContactData((prev) => ({
+            ...prev,
+            ...data,
+            cityULB: data.city || prev.cityULB, // Map city to cityULB
+          }));
+        }
+      } catch (error) {
+        console.error("Failed to fetch contact data:", error);
+      }
+    };
+    fetchContactData();
+  }, []);
 
   /* ===================== PASSWORD ===================== */
   const [passwordData, setPasswordData] = useState({
@@ -139,10 +159,31 @@ const AdminNavbar = ({ onMenuClick }) => {
   const handlePasswordChange = (e) =>
     setPasswordData((p) => ({ ...p, [e.target.name]: e.target.value }));
 
-  const handleContactSubmit = (e) => {
+  const handleContactSubmit = async (e) => {
     e.preventDefault();
-    toast.success("Contact details updated successfully!");
-    setShowContactModal(false);
+    console.log("Submitting contact data:", contactData);
+    try {
+      const dataToSend = {
+        ...contactData,
+        city: contactData.cityULB, // Map cityULB to city for backend
+      };
+      delete dataToSend.cityULB; // Remove cityULB
+      console.log("Data to send:", dataToSend);
+      const response = await api.put(
+        "/contact-profile/update-profile",
+        dataToSend,
+      );
+      console.log("API response:", response);
+      toast.success("Contact details updated successfully!");
+      setShowContactModal(false);
+    } catch (error) {
+      console.error("Contact update error:", error);
+      console.error("Error response:", error.response);
+      toast.error(
+        error.response?.data?.message ||
+          "Failed to update contact details. Please try again.",
+      );
+    }
   };
 
   /* ===================== 🔥 CHANGE PASSWORD LOGIC ===================== */

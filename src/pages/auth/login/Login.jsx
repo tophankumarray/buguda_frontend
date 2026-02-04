@@ -17,7 +17,6 @@ import { useAuth } from "../../../context/AuthContext";
 import {
   DOWNLOAD_URL,
   downloadFileFromPublic,
-  generateOtp,
   LOGO,
 } from "./utils/loginHelpers";
 import api from "../../../api/api";
@@ -33,24 +32,7 @@ const Login = () => {
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [showNotice, setShowNotice] = useState(true);
   const [generatedOtp, setGeneratedOtp] = useState("");
-
-  /* ---------- helpers ---------- */
-
-  const ensureCitizenExists = async (phoneNumber) => {
-    try {
-      const { data: citizens } = await api.get("/citizens", {
-        params: { phone: phoneNumber },
-      });
-
-      if (!citizens || citizens.length === 0) {
-        await api.post("/citizens", { phone: phoneNumber });
-      }
-    } catch (error) {
-      console.error("Failed to ensure citizen exists", error);
-    }
-  };
 
   const handleDownloadGuide = () => {
     downloadFileFromPublic(DOWNLOAD_URL, "SBM 2.0.pdf");
@@ -58,29 +40,34 @@ const Login = () => {
 
   /* ---------- citizen login ---------- */
 
-  const handleGetOtp = () => {
+  const handleGetOtp = async () => {
     if (phone.length !== 10) {
       toast.warning("Phone number must be 10 digits ❗");
       return;
     }
 
-    const otpValue = generateOtp();
-    setGeneratedOtp(otpValue);
-    setShowOtpInput(true);
-
-    console.log("Generated OTP:", otpValue);
-    toast.info(`Demo OTP: ${otpValue}`);
+    try {
+      const response = await api.post("/citizen/send-otp", { phone });
+      setGeneratedOtp(response.data.otp);
+      setShowOtpInput(true);
+      toast.success("OTP sent to your phone!");
+    } catch (error) {
+      toast.error("Failed to send OTP. Please try again.");
+      console.error("Send OTP error:", error);
+    }
   };
 
   const handleVerifyOtp = async () => {
-    if (otp === generatedOtp) {
-      await ensureCitizenExists(phone);
-
-      login({ role: "citizen", phone });
+    try {
+      const response = await api.post("/citizen/verify-otp", { phone, otp });
+      const { token, citizen } = response.data;
+      localStorage.setItem("token", token);
+      login({ role: "citizen", phone, citizen });
       toast.success("Login successful!");
       navigate("/citizen");
-    } else {
-      toast.error("Invalid OTP ❌");
+    } catch (error) {
+      toast.error("Invalid OTP or expired. Please try again.");
+      console.error("Verify OTP error:", error);
     }
   };
 
@@ -151,10 +138,10 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row font-sans bg-gray-100">
-      <NoticePopup
+      {/* <NoticePopup
         showNotice={showNotice}
         onClose={() => setShowNotice(false)}
-      />
+      /> */}
 
       <LeftPanel />
 

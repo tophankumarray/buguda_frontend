@@ -9,6 +9,7 @@ import {
   fetchWasteCollections,
   fetchFuelRecords,
 } from "./utils/dashboardApi";
+import { getAllCitizenPhones } from "../../../api/admin/citizen.api";
 
 import {
   normalizeComplaintStatus,
@@ -31,8 +32,8 @@ const buildRecentActivities = ({
         c.status === "Resolved"
           ? "success"
           : c.status === "Pending"
-          ? "warning"
-          : "info",
+            ? "warning"
+            : "info",
       timestamp: new Date(c.createdAt).toLocaleString("en-IN"),
       rawDate: c.createdAt,
     });
@@ -114,7 +115,6 @@ const useAdminDashboard = () => {
         { status: "Absent" },
         { status: "Leave" },
       ];
-      const citizens = Array(120).fill({});
 
       /* ---------------- API CALLS ---------------- */
       const [
@@ -123,23 +123,24 @@ const useAdminDashboard = () => {
         wardsRes,
         wasteRes,
         fuelRes,
+        citizensRes,
       ] = await Promise.all([
         fetchVehicles(),
         fetchComplaints(),
         fetchWards(),
         fetchWasteCollections(),
         fetchFuelRecords(),
+        getAllCitizenPhones(),
       ]);
 
       /* ---------------- SAFE VEHICLE EXTRACTION ---------------- */
-      const vehicles =
-        Array.isArray(vehiclesRes?.data?.data)
-          ? vehiclesRes.data.data
-          : Array.isArray(vehiclesRes?.data?.data?.trackings)
+      const vehicles = Array.isArray(vehiclesRes?.data?.data)
+        ? vehiclesRes.data.data
+        : Array.isArray(vehiclesRes?.data?.data?.trackings)
           ? vehiclesRes.data.data.trackings
           : Array.isArray(vehiclesRes?.data?.data?.list)
-          ? vehiclesRes.data.data.list
-          : [];
+            ? vehiclesRes.data.data.list
+            : [];
 
       if (!Array.isArray(vehicles)) {
         throw new Error("Vehicles is not an array");
@@ -149,8 +150,8 @@ const useAdminDashboard = () => {
       const wards = wardsRes?.data?.data || [];
       const wasteCollections = wasteRes?.data?.data || [];
       const fuelRecords = fuelRes?.data?.data || [];
-
-
+      const citizens =
+        citizensRes?.success === false ? [] : citizensRes?.citizens || [];
 
       /* ---------------- RECENT ACTIVITY ---------------- */
       const recentActivities = buildRecentActivities({
@@ -161,9 +162,7 @@ const useAdminDashboard = () => {
       /* ---------------- WARD COVERAGE (WARD MODEL BASED) ---------------- */
       const wardCoverageData = wards.map((ward) => {
         const wastePerHousehold =
-          ward.household > 0
-            ? ward.wasteGenerationPerDay / ward.household
-            : 0;
+          ward.household > 0 ? ward.wasteGenerationPerDay / ward.household : 0;
 
         let capacityFactor = 1;
         if (ward.collectionFrequency === "Alternate Day") capacityFactor = 0.7;
@@ -171,14 +170,11 @@ const useAdminDashboard = () => {
 
         // Estimated coverage %
         const estimatedCoverage = Math.round(
-          Math.min(wastePerHousehold * capacityFactor * 50, 100)
+          Math.min(wastePerHousehold * capacityFactor * 50, 100),
         );
 
         let status = "critical";
-        if (
-          ward.collectionFrequency === "Daily" &&
-          wastePerHousehold <= 2
-        ) {
+        if (ward.collectionFrequency === "Daily" && wastePerHousehold <= 2) {
           status = "good";
         } else if (
           ward.collectionFrequency === "Alternate Day" ||
@@ -202,7 +198,7 @@ const useAdminDashboard = () => {
       const totalWaste =
         wasteCollections.reduce(
           (s, w) => s + parseFloat(w?.targetQuantity || 0),
-          0
+          0,
         ) / 1000;
 
       /* ---------------- ACTIVE VEHICLES ---------------- */
@@ -228,15 +224,15 @@ const useAdminDashboard = () => {
       }));
 
       const pendingCount = normalizedComplaints.filter(
-        (c) => c.normalizedStatus === "pending"
+        (c) => c.normalizedStatus === "pending",
       ).length;
 
       const openCount = normalizedComplaints.filter(
-        (c) => c.normalizedStatus === "in-progress"
+        (c) => c.normalizedStatus === "in-progress",
       ).length;
 
       const closedCount = normalizedComplaints.filter(
-        (c) => c.normalizedStatus === "resolved"
+        (c) => c.normalizedStatus === "resolved",
       ).length;
 
       /* ---------------- FUEL ---------------- */
@@ -244,15 +240,14 @@ const useAdminDashboard = () => {
         (s, f) =>
           s +
           Number(
-            f?.totalCost ??
-              (f?.quantityLiters || 0) * (f?.pricePerLiter || 0)
+            f?.totalCost ?? (f?.quantityLiters || 0) * (f?.pricePerLiter || 0),
           ),
-        0
+        0,
       );
 
       const totalFuelQty = fuelRecords.reduce(
         (s, f) => s + Number(f?.quantity || f?.quantityLiters || 0),
-        0
+        0,
       );
 
       /* ---------------- STATE SET ---------------- */
@@ -261,7 +256,7 @@ const useAdminDashboard = () => {
           waste: safeNumber(totalWaste),
           vehicles: safeNumber(activeVehicles.length),
           activeStaff: safeNumber(
-            attendance.filter((a) => a.status === "Present").length
+            attendance.filter((a) => a.status === "Present").length,
           ),
           complaints: safeNumber(complaints.length),
           wards: safeNumber(wards.length),
@@ -272,7 +267,7 @@ const useAdminDashboard = () => {
           resolvedComplaints: safeNumber(closedCount),
           totalComplaints: safeNumber(complaints.length),
           collectionRate: safeNumber(
-            dashboardData.performance?.collectionRate ?? 94
+            dashboardData.performance?.collectionRate ?? 94,
           ),
         },
 
@@ -288,20 +283,20 @@ const useAdminDashboard = () => {
         vehicles: {
           running: safeNumber(
             activeVehicles.filter((v) => getVehicleStatus(v) === "running")
-              .length
+              .length,
           ),
           standing: safeNumber(
             activeVehicles.filter((v) => getVehicleStatus(v) === "standing")
-              .length
+              .length,
           ),
           stopped: safeNumber(
             activeVehicles.filter((v) => getVehicleStatus(v) === "stopped")
-              .length
+              .length,
           ),
           dataNotRetrieving: safeNumber(
             activeVehicles.filter(
-              (v) => getVehicleStatus(v) === "dataNotRetrieving"
-            ).length
+              (v) => getVehicleStatus(v) === "dataNotRetrieving",
+            ).length,
           ),
         },
 
@@ -315,9 +310,7 @@ const useAdminDashboard = () => {
         fuelManagement: {
           totalCost: Math.round(totalFuelCost),
           avgCostPerLiter:
-            totalFuelQty > 0
-              ? Math.round(totalFuelCost / totalFuelQty)
-              : 0,
+            totalFuelQty > 0 ? Math.round(totalFuelCost / totalFuelQty) : 0,
         },
         recentActivities,
 
@@ -346,8 +339,7 @@ const useAdminDashboard = () => {
             };
           })
           .filter(Boolean),
-
-              });
+      });
 
       if (showToast) toast.success("Dashboard refreshed!");
     } catch (e) {

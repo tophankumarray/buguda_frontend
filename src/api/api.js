@@ -3,6 +3,7 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || "https://amabuguda.com/api",
+  withCredentials: true,
   timeout: 10000,
 });
 
@@ -29,6 +30,12 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    console.error(
+      "API Error for:",
+      error.config?.url,
+      error.response?.status,
+      error.response?.data,
+    );
     if (error.response) {
       const status = error.response.status;
       const url = error.config?.url || "";
@@ -38,11 +45,14 @@ api.interceptors.response.use(
         url.includes("/admin/login") ||
         url.includes("/supervisors/loginsupervisor");
 
-      // ❌ DO NOT redirect on login failure
-      if (status === 401 && !isLoginRequest) {
-        localStorage.removeItem("token");
-        window.location.href = "/login";
-      }
+const isAuthCheck =
+  url.includes("/admin/citizens") || url.includes("/admin/profile");
+
+if (status === 401 && !isLoginRequest && !isAuthCheck) {
+  localStorage.removeItem("token");
+  window.location.href = "/login";
+}
+
 
       // Optional logs
       if (status === 403) console.error("Forbidden");

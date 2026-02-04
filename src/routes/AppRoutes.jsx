@@ -15,6 +15,7 @@ import TrackVehicle from "../pages/admin/track-vehicles";
 import Vehicle from "../pages/admin/vehicles";
 import Ward from "../pages/admin/wards";
 import WasteCollection from "../pages/admin/wastecollection";
+import RegisterCitizen from "../pages/admin/citizen_register/RegisterCitizen";
 
 /* ================= CITIZEN ================= */
 import CitizenLayout from "../layout/CitizenLayout";
@@ -65,6 +66,7 @@ export default function AppRoutes() {
           <Route path="track-vehicles" element={<TrackVehicle />} />
           <Route path="waste-collection" element={<WasteCollection />} />
           <Route path="fuel-management" element={<FuelManagement />} />
+          <Route path="register-citizen" element={<RegisterCitizen />} />
         </Route>
 
         {/* ================= CITIZEN ROUTES ================= */}

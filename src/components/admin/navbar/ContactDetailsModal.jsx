@@ -1,4 +1,6 @@
 // @ts-nocheck
+import React from "react";
+
 const ContactDetailsModal = ({
   show,
   contactData,
@@ -6,7 +8,26 @@ const ContactDetailsModal = ({
   handleContactSubmit,
   handleContactCancel,
 }) => {
+  const [isEditing, setIsEditing] = React.useState(false);
+
   if (!show) return null;
+
+  const handleEdit = () => {
+    console.log("Edit button clicked, setting isEditing to true");
+    setIsEditing(true);
+  };
+
+  const handleSubmit = async (e) => {
+    console.log("Submit button clicked, calling handleContactSubmit");
+    e.preventDefault();
+    await handleContactSubmit(e);
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    handleContactCancel();
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -23,7 +44,7 @@ const ContactDetailsModal = ({
           </div>
         </div>
 
-        <form onSubmit={handleContactSubmit} className="p-6">
+        <form onSubmit={handleSubmit} className="p-6">
           {/* First Row */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
             <div>
@@ -35,7 +56,8 @@ const ContactDetailsModal = ({
                 value={contactData.contactLevel}
                 onChange={handleContactChange}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-gray-50"
+                disabled={!isEditing}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed"
               >
                 <option value="ULB">ULB</option>
                 <option value="State">State</option>
@@ -53,7 +75,8 @@ const ContactDetailsModal = ({
                 value={contactData.state}
                 onChange={handleContactChange}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 bg-gray-50"
+                disabled={!isEditing}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed"
               />
             </div>
 
@@ -67,7 +90,8 @@ const ContactDetailsModal = ({
                 value={contactData.district}
                 onChange={handleContactChange}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 bg-gray-50"
+                disabled={!isEditing}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed"
               />
             </div>
 
@@ -81,7 +105,8 @@ const ContactDetailsModal = ({
                 value={contactData.cityULB}
                 onChange={handleContactChange}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 bg-gray-50"
+                disabled={!isEditing}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed"
               />
             </div>
           </div>
@@ -98,7 +123,8 @@ const ContactDetailsModal = ({
                 value={contactData.designation}
                 onChange={handleContactChange}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 bg-gray-50"
+                disabled={!isEditing}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed"
               />
             </div>
 
@@ -112,7 +138,8 @@ const ContactDetailsModal = ({
                 value={contactData.name}
                 onChange={handleContactChange}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 bg-gray-50"
+                disabled={!isEditing}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed"
               />
             </div>
 
@@ -126,9 +153,12 @@ const ContactDetailsModal = ({
                 value={contactData.officialMobile}
                 onChange={handleContactChange}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 bg-gray-50"
+                disabled={!isEditing}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed"
               />
-              <p className="text-xs text-gray-500 mt-1">It will be used for OTP</p>
+              <p className="text-xs text-gray-500 mt-1">
+                It will be used for OTP
+              </p>
             </div>
 
             <div>
@@ -141,9 +171,12 @@ const ContactDetailsModal = ({
                 value={contactData.officialEmail}
                 onChange={handleContactChange}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 bg-gray-50"
+                disabled={!isEditing}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed"
               />
-              <p className="text-xs text-gray-500 mt-1">It will be used for OTP</p>
+              <p className="text-xs text-gray-500 mt-1">
+                It will be used for OTP
+              </p>
             </div>
           </div>
 
@@ -157,22 +190,32 @@ const ContactDetailsModal = ({
               value={contactData.address}
               onChange={handleContactChange}
               rows="2"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 bg-gray-50"
+              disabled={!isEditing}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed"
             />
           </div>
 
           {/* Buttons */}
           <div className="flex gap-3 justify-start">
             <button
-              type="submit"
-              className="px-8 py-2.5 bg-linear-to-r from-emerald-500 to-teal-500 text-white rounded-lg font-semibold shadow-lg hover:shadow-xl"
+              type="button"
+              onClick={handleEdit}
+              className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold shadow-lg hover:shadow-xl disabled:bg-gray-400 disabled:cursor-not-allowed"
+              disabled={isEditing}
             >
-              Update
+              Edit
+            </button>
+            <button
+              type="submit"
+              className="px-6 py-2.5 bg-linear-to-r from-emerald-500 to-teal-500 text-white rounded-lg font-semibold shadow-lg hover:shadow-xl disabled:bg-gray-400 disabled:cursor-not-allowed"
+              disabled={!isEditing}
+            >
+              Submit
             </button>
             <button
               type="button"
-              onClick={handleContactCancel}
-              className="px-8 py-2.5 bg-gray-400 text-white rounded-lg font-semibold hover:bg-gray-500 shadow-lg"
+              onClick={handleCancel}
+              className="px-6 py-2.5 bg-gray-400 text-white rounded-lg font-semibold hover:bg-gray-500 shadow-lg"
             >
               Cancel
             </button>

@@ -15,7 +15,7 @@ const SupervisorTable = ({ supervisors, onEdit, onDelete }) => {
               <th className="px-4 py-3 text-left text-xs font-bold text-white uppercase">Email</th>
               <th className="px-4 py-3 text-left text-xs font-bold text-white uppercase">Mobile</th>
               <th className="px-4 py-3 text-left text-xs font-bold text-white uppercase">Status</th>
-              <th className="px-4 py-3 text-left text-xs font-bold text-white uppercase">Actions</th>
+              {/* <th className="px-4 py-3 text-left text-xs font-bold text-white uppercase">Actions</th> */}
             </tr>
           </thead>
 
@@ -60,7 +60,7 @@ const SupervisorTable = ({ supervisors, onEdit, onDelete }) => {
                   </span>
                 </td>
 
-                <td className="px-4 py-4">
+                {/* <td className="px-4 py-4">
                   <div className="flex space-x-2">
                     <button
                       onClick={() => onEdit(supervisor)}
@@ -75,7 +75,7 @@ const SupervisorTable = ({ supervisors, onEdit, onDelete }) => {
                       Delete
                     </button>
                   </div>
-                </td>
+                </td> */}
               </tr>
             ))}
           </tbody>
