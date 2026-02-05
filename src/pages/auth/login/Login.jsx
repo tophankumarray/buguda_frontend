@@ -53,7 +53,7 @@ const Login = () => {
       setShowOtpInput(true);
       toast.success("OTP sent to your phone!");
     } catch (error) {
-      toast.error("Failed to send OTP. Please try again.");
+      toast.error("In Valid Phone Number ❌");
       console.error("Send OTP error:", error);
     }
   };
